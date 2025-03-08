@@ -1,0 +1,24 @@
+service: Perdomeo
+frameworkVersion: '3'
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: python3.9
+
+functions:
+  ApiOne:
+    handler: handler.ApiOne
+    events:
+      - http:
+          path: /one
+          method: get
+
+  ApiTwo:
+    handler: handler.ApiTwo
+    events:
+      - http:
+          path: /two
+          method: get
