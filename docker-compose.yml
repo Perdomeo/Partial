@@ -1,0 +1,64 @@
+services:
+  #  --------------------------------------------
+  mysql-one:
+    build:
+      context: ./MySQL
+      dockerfile: Dockerfile
+    container_name: mysql-one
+    volumes:
+      - ./MySQL/mysql_data_one:/var/lib/mysql
+    ports:
+      - "4600:3306"
+    networks:
+      - network-one
+    healthcheck:
+      test: [ "CMD","mysql", "-u", "root", "-proot" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  mysql-two:
+    build:
+      context: ./MySQL
+      dockerfile: Dockerfile
+    container_name: mysql-two
+    volumes:
+      - ./MySQL/mysql_data_two:/var/lib/mysql
+    ports:
+      - "4800:3306"
+    networks:
+      - network-two
+    healthcheck:
+      test: [ "CMD","mysql", "-u", "root", "-proot" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  #  --------------------------------------------
+  adminer-one:
+    image: adminer
+    container_name: adminer-one
+    depends_on:
+      - mysql-one
+    ports:
+      - "8001:8080"
+    networks:
+      - network-one
+
+  adminer-two:
+    image: adminer
+    container_name: adminer-two
+    depends_on:
+      - mysql-two
+    ports:
+      - "9001:8080"
+    networks:
+      - network-two
+#  --------------------------------------------
+networks:
+  network-one:
+    driver: bridge
+    name: network-one
+
+  network-two:
+    driver: bridge
+    name: network-two
